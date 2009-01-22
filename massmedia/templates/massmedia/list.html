@@ -1,0 +1,11 @@
+{% load media_widgets %}
+
+{% if objects %}
+<ul>
+{% for media in objects %}
+    <li><b>{{ media }}</b><br><blockquote>{% show_media media %}</blockquote></li>
+{% endfor %}
+</ul>
+{% else %}
+No media found
+{% endif %}
