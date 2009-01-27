@@ -19,9 +19,9 @@ import zipfile
 mimetypes.types_map.update(appsettings.EXTRA_MIME_TYPES)
 
 try:
-    from cPickle import loads,dumps
+    import cPickle as pickle
 except ImportError:
-    from pickle import loads,dumps
+    import pickle
 try:
     # Try to use http://code.google.com/p/django-categories/
     from categories.models import Category
@@ -50,14 +50,14 @@ class PickledObjectField(models.Field):
     __metaclass__ = models.SubfieldBase
     
     def to_python(self, value):
-        if isinstance(value, PickledObject): return loads(str(value))
+        if isinstance(value, PickledObject): return pickle.loads(str(value))
         else:
-            try: return loads(str(value))
+            try: return pickle.loads(str(value))
             except: return value
     
     def get_db_prep_save(self, value):
         if value and not isinstance(value, PickledObject):
-            return PickledObject(dumps(value))
+            return PickledObject(pickle.dumps(value),pickle.HIGHEST_PROTOCOL)
         return value
     
     def get_internal_type(self): return 'TextField'
