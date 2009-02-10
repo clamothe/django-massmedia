@@ -1,6 +1,7 @@
 from django.contrib import admin
 from massmedia.models import Image,Video,Audio,Flash,Collection,CollectionRelation
 from django.contrib.contenttypes.models import ContentType
+from django.template.defaultfilters import slugify
 
 class GenericCollectionInlineModelAdmin(admin.options.InlineModelAdmin):
     ct_field = "content_type"

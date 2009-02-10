@@ -57,7 +57,7 @@ class PickledObjectField(models.Field):
     
     def get_db_prep_save(self, value):
         if value and not isinstance(value, PickledObject):
-            return PickledObject(pickle.dumps(value),pickle.HIGHEST_PROTOCOL)
+            return PickledObject(pickle.dumps(value))
         return value
     
     def get_internal_type(self): return 'TextField'
