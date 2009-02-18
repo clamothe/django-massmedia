@@ -106,7 +106,7 @@ class CollectionTestCase(unittest.TestCase):
         self.assertEqual(expected_metadata,
             [dict(x.content_object.metadata) for x in relations],
             'Wrong metadata info')
-	return
+        return
         testplate =  Template("""
             {% load media_widgets %}
             {% spaceless %}
