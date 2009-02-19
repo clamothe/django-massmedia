@@ -12,7 +12,12 @@ def widget(reqeust,id,type):
     elif type == 'flash':  model = Flash
     elif type == 'video':  model = Video
     else: raise Http404
-    return HttpResponse(show_media(get_object_or_404(model, pk=id)))
+    code = """
+    <script type="text/javascript">
+        alert(window.parent.name);
+    </script>
+    """
+    return HttpResponse(code+show_media(get_object_or_404(model, pk=id)))
 
 def list_by_type(request,type):
     if type == 'image':  model = Image
