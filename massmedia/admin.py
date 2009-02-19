@@ -59,7 +59,7 @@ class CollectionAdmin(admin.ModelAdmin):
         js = ('js/genericcollections.js')
 
 admin.site.register(Collection , CollectionAdmin)
-admin.site.register(Image, ImageAdmin)
+admin.site.register(Image)#, ImageAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(Audio, AudioAdmin)
 admin.site.register(Flash, FlashAdmin)

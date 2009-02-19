@@ -11,11 +11,14 @@ def widget(reqeust,id,type):
     elif type == 'audio':  model = Audio
     elif type == 'flash':  model = Flash
     elif type == 'video':  model = Video
-    else: raise Http404
-    return render_to_response('massmedia/inline.html',{
-        'media':get_object_or_404(model, pk=id),
-        'type':type
-    })
+    else: return HttpResponse('%s not found'%type)
+    try:
+        return render_to_response('massmedia/inline.html',{
+            'media':model.objects.get(pk=id),
+            'type':type
+        })
+    except model.DoesNotExist:
+        return HttpResponse('%s #%s not found'%(type,id))
 
 def list_by_type(request,type):
     if type == 'image':  model = Image
