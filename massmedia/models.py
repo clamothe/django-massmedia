@@ -99,10 +99,12 @@ class Media(models.Model):
     def get_absolute_url(self):
         if self.external_url:
             return self.external_url
-        return self.absolute_url((
-            settings.MEDIA_URL,
-            self.creation_date.strftime("%Y/%b/%d"),
-            os.path.basename(self.file.path)))
+        elif hasattr(self,'file'):
+            return self.absolute_url((
+                settings.MEDIA_URL,
+                self.creation_date.strftime("%Y/%b/%d"),
+                os.path.basename(self.file.path)))
+        return ''
         
     def absolute_url(self, format):
         raise NotImplementedError
