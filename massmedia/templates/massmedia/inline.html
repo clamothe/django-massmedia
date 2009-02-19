@@ -2,7 +2,9 @@
 <html>
     <head>
         <script type="text/javascript">
-            alert(window.parent.document.getElementById('{{ type }}{{ media.id }}'));
+            var frame = window.parent.document.getElementById('{{ type }}{{ media.id }}');
+            {% if media.height %}frame.style.height = '{{ media.height }}';{% endif %}
+            {% if media.width %}frame.style.width = '{{ media.width }}';{% endif %}
         </script>
     </head>
     <body>
