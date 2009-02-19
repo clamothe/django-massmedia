@@ -1,3 +1,29 @@
+# stdlib
+import mimetypes
+import os
+import zipfile
+from cStringIO import StringIO
+
+try:
+    import Image as PilImage
+except ImportError:
+    from PIL import Image as PilImage
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
+# hachoir
+try:
+    from hachoir_core.error import HachoirError
+    from hachoir_core.stream import InputStreamError
+    from hachoir_parser import createParser
+    from hachoir_metadata import extractMetadata
+except ImportError:
+    extractMetadata = None
+
+# django
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -9,19 +35,12 @@ from django.core.files.base import ContentFile
 from django.template.loader import get_template
 from django.template import TemplateDoesNotExist
 
+# app
 from massmedia import settings as appsettings
-from cStringIO import StringIO
-import mimetypes
-import os
-import zipfile
 
 # Patch mimetypes w/ any extra types
 mimetypes.types_map.update(appsettings.EXTRA_MIME_TYPES)
 
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 try:
     # Try to use http://code.google.com/p/django-categories/
     from categories.models import Category
@@ -29,28 +48,19 @@ except ImportError:
     # Otherwise use dummy category
     class Category(models.Model):
         name = models.CharField(max_length=150)
-        def __unicode__(self): return self.name
-try:
-    import Image as PilImage
-except ImportError:
-    from PIL import Image as PilImage
+        
+        def __unicode__(self):
+            return self.name
 
-try:
-    from hachoir_core.error import HachoirError
-    from hachoir_core.stream import InputStreamError
-    from hachoir_parser import createParser
-    from hachoir_metadata import extractMetadata
-except ImportError:
-    extractMetadata = None
-
-
-class PickledObject(str): pass
+class PickledObject(str):
+    pass
 
 class PickledObjectField(models.Field):
     __metaclass__ = models.SubfieldBase
     
     def to_python(self, value):
-        if isinstance(value, PickledObject): return pickle.loads(str(value))
+        if isinstance(value, PickledObject):
+            return pickle.loads(str(value))
         else:
             try: return pickle.loads(str(value))
             except: return value
@@ -63,11 +73,17 @@ class PickledObjectField(models.Field):
     def get_internal_type(self): return 'TextField'
     
     def get_db_prep_lookup(self, lookup_type, value):
-        if lookup_type == 'exact': return super(PickledObjectField, self)\
-            .get_db_prep_lookup(lookup_type, self.get_db_prep_save(value))
-        elif lookup_type == 'in':  return super(PickledObjectField, self)\
-            .get_db_prep_lookup(lookup_type, [self.get_db_prep_save(v) for v in value])
-        else: raise TypeError('Lookup type %s is not supported.' % lookup_type)
+        if lookup_type == 'exact':
+            return super(PickledObjectField, self).get_db_prep_lookup \
+                (lookup_type,
+                self.get_db_prep_save(value))
+        elif lookup_type == 'in':
+            return super(PickledObjectField, self).get_db_prep_lookup \
+                (lookup_type,
+                [self.get_db_prep_save(v) for v in value])
+        else:
+            raise TypeError('Lookup type %s is not supported.' % lookup_type)
+
 
 class Media(models.Model):
     title = models.CharField(max_length=255, unique=True)
@@ -89,7 +105,7 @@ class Media(models.Model):
     widget_template = models.CharField(max_length=255, blank=True, null=True,
                 help_text='The template name used to generate the widget (defaults to mime_type layout)')
     
-    class META:
+    class Meta:
         ordering = ('-creation_date', )
         abstract = True
         
@@ -175,6 +191,7 @@ class Media(models.Model):
                 except TemplateDoesNotExist:
                     return get_template('massmedia/generic.html')
 
+
 class Image(Media):
     file = models.ImageField(upload_to='img/%Y/%b/%d', blank=True, null=True)
     
@@ -197,24 +214,27 @@ class Image(Media):
     def absolute_url(self, format):
         return "%simg/%s/%s" % format
 
+
 class Video(Media):
     file = models.FileField(upload_to='video/%Y/%b/%d', blank=True, null=True)
     thumbnail = models.ForeignKey(Image, null=True, blank=True)
     
     def absolute_url(self, format):
         return "%svideo/%s/%s" % format
-    
+
+
 class Audio(Media):
     file = models.FileField(upload_to='audio/%Y/%b/%d', blank=True, null=True)
     def absolute_url(self, format):
         return "%saudio/%s/%s" % format
 
+
 class Flash(Media):
     file = models.FileField(upload_to='flash/%Y/%b/%d', blank=True, null=True)
     def absolute_url(self, format):
         return "%sflash/%s/%s" % format
-    
-   
+
+
 class Collection(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255, unique=True)
@@ -281,11 +301,15 @@ class Collection(models.Model):
             self.zip_file.delete()
             super(Collection, self).save(*(), **{})
 
-collection_limits = {'model__in':('image', 'audio', 'video', 'flash')}
+
+collection_limits = {'model__in': ('image', 'audio', 'video', 'flash') }
+
 class CollectionRelation(models.Model):
     collection = models.ForeignKey(Collection)
     content_type = models.ForeignKey(ContentType, limit_choices_to=collection_limits)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
+    
     def __unicode__(self):
         return unicode(self.content_object)
+
