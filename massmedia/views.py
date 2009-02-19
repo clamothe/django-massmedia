@@ -14,7 +14,8 @@ def widget(reqeust,id,type):
     else: raise Http404
     code = """
     <script type="text/javascript">
-        alert(window.parent.name);
+        window.parent.style.height = "30px";
+        alert(window.parent.style.height);
     </script>
     """
     return HttpResponse(code+show_media(get_object_or_404(model, pk=id)))
