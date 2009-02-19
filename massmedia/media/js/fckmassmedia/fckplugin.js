@@ -9,5 +9,5 @@ MassMediaCommand.Execute=function() {
 }
 FCKCommands.RegisterCommand('MassMedia', MassMediaCommand ); //otherwise our command will not be found
 var oMassMedias = new FCKToolbarButton('MassMedia', 'insert media');
-oMassMedias.IconPath = FCKConfig.PluginsPath + 'icon.png'; //specifies the image used in the toolbar
+oMassMedias.IconPath = FCKConfig.PluginsPath + 'fckmassmedia/icon.png'; //specifies the image used in the toolbar
 FCKToolbarItems.RegisterItem( 'MassMedia', oMassMedias );
