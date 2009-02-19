@@ -13,7 +13,8 @@ def widget(reqeust,id,type):
     elif type == 'video':  model = Video
     else: raise Http404
     return render_to_response('massmedia/inline.html',{
-        'media':get_object_or_404(model, pk=id)
+        'media':get_object_or_404(model, pk=id),
+        'type':type
     })
 
 def list_by_type(request,type):
