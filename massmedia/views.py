@@ -1,8 +1,18 @@
 from massmedia.models import Collection,CollectionRelation,Image,Flash,Video,Audio
+from massmedia.templatetags.media_widgets import show_media
 from django.shortcuts import render_to_response,get_object_or_404
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404,HttpResponse
 from django.contrib.contenttypes.models import ContentType
+
+
+def widget(reqeust,id,type):
+    if type == 'image':  model = Image
+    elif type == 'audio':  model = Audio
+    elif type == 'flash':  model = Flash
+    elif type == 'video':  model = Video
+    else: raise Http404
+    return HttpResponse(show_media(get_object_or_404(model, pk=id)))
 
 def list_by_type(request,type):
     if type == 'image':  model = Image
