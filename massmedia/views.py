@@ -10,14 +10,14 @@ def widget(request, id, media_type):
     elif media_type == 'audio':  model = Audio
     elif media_type == 'flash':  model = Flash
     elif media_type == 'video':  model = Video
-    else: return HttpResponse('%s not found'%media_type)
+    else: return HttpResponse('%s not found' % media_type)
     try:
         return render_to_response('massmedia/inline.html', {
             'media':model.objects.get(pk=id),
             'type':media_type
         })
     except model.DoesNotExist:
-        return HttpResponse('%s #%s not found'%(media_type, id))
+        return HttpResponse('%s #%s not found' % (media_type, id))
 
 def list_by_type(request, media_type):
     if media_type == 'image':  model = Image

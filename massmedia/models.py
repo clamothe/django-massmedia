@@ -168,10 +168,10 @@ class Media(models.Model):
             return get_template('massmedia/generic.html')
         else:
             try:
-                return get_template('massmedia/%s.html'%mime_type)
+                return get_template('massmedia/%s.html' % mime_type)
             except TemplateDoesNotExist:
                 try:
-                    return get_template('massmedia/%s/generic.html'%mime_type.split('/')[0])
+                    return get_template('massmedia/%s/generic.html' % mime_type.split('/')[0])
                 except TemplateDoesNotExist:
                     return get_template('massmedia/generic.html')
 
@@ -180,7 +180,7 @@ class Image(Media):
     
     def thumb(self):
         if self.file:
-            thumbnail = '%s.thumb%s'%os.path.splitext(self.file.path)
+            thumbnail = '%s.thumb%s' % os.path.splitext(self.file.path)
             thumburl = thumbnail[len(settings.MEDIA_ROOT)+1:]
             if not os.path.exists(thumbnail):
                 im = PilImage.open(self.file)
@@ -267,7 +267,7 @@ class Collection(models.Model):
                     elif ext in appsettings.FLASH_EXTS:
                         model = Flash
                     else:
-                        raise TypeError, 'Unknown media extension %s'%ext
+                        raise TypeError, 'Unknown media extension %s' % ext
                     try:
                         media = model.objects.get(slug=slug) #XXX
                     except model.DoesNotExist:
