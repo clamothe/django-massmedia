@@ -3,8 +3,8 @@
     <head>
         <script type="text/javascript">
             var frame = window.parent.document.getElementById('{{ type }}{{ media.id }}');
-            {% if media.height %}frame.style.height = '{{ media.height }}';{% endif %}
-            {% if media.width %}frame.style.width = '{{ media.width }}';{% endif %}
+            {% if media.height %}frame.height = '{{ media.height }}';{% endif %}
+            {% if media.width %}frame.width = '{{ media.width }}';{% endif %}
         </script>
     </head>
     <body>
