@@ -111,10 +111,10 @@ class Media(models.Model):
         raise NotImplementedError
     
     def save(self, *args, **kwargs):
-        if self.file and not self.mime_type:
-            self.mime_type = mimetypes.guess_type(self.file.path)[0]
-        if not(self.metadata) and self.file and extractMetadata:
-            self.parse_metadata()
+        #if self.file and not self.mime_type:
+        #    self.mime_type = mimetypes.guess_type(self.file.path)[0]
+        #if not(self.metadata) and self.file and extractMetadata:
+        #    self.parse_metadata()
         super(Media, self).save(*args, **kwargs)
     
     def parse_metadata(self):
