@@ -70,7 +70,7 @@ class PickledObjectField(models.Field):
         else: raise TypeError('Lookup type %s is not supported.' % lookup_type)
 
 class Media(models.Model):
-    title = models.CharField(max_length=255,unique=True)
+    title = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, blank=True, null=True, limit_choices_to={'is_staff':True})
@@ -82,15 +82,15 @@ class Media(models.Model):
     categories = models.ManyToManyField(Category, blank=True)
     reproduction_allowed = models.BooleanField("we have reproduction rights for this media", default=True)
     public = models.BooleanField(help_text="this media is publicly available", default=True)
-    external_url = models.URLField(blank=True,null=True,help_text="If this URLField is set, the media will be pulled externally")
-    mime_type = models.CharField(max_length=150,blank=True,null=True)
+    external_url = models.URLField(blank=True, null=True, help_text="If this URLField is set, the media will be pulled externally")
+    mime_type = models.CharField(max_length=150, blank=True, null=True)
     width = models.IntegerField(blank=True, null=True, help_text="The width of the widget for the media")
     height = models.IntegerField(blank=True, null=True, help_text="The height of the widget for the media")
-    widget_template = models.CharField(max_length=255,blank=True,null=True,
+    widget_template = models.CharField(max_length=255, blank=True, null=True,
                 help_text='The template name used to generate the widget (defaults to mime_type layout)')
     
     class META:
-        ordering = ('-creation_date',)
+        ordering = ('-creation_date', )
         abstract = True
         
     def __unicode__(self):
@@ -99,7 +99,7 @@ class Media(models.Model):
     def get_absolute_url(self):
         if self.external_url:
             return self.external_url
-        if hasattr(self,'file') and getattr(self,'file',None):
+        if hasattr(self, 'file') and getattr(self, 'file', None):
             return self.absolute_url((
                 settings.MEDIA_URL,
                 self.creation_date.strftime("%Y/%b/%d"),
@@ -139,10 +139,10 @@ class Media(models.Model):
                 key = line.strip().split('- ')[1].split(': ')[0]
                 value = line.split(key)[1][2:]
                 if key in data:
-                    if hasattr(data[key],'__iter__'):
+                    if hasattr(data[key], '__iter__'):
                         value = data[key] + [value]
                     else:
-                        value = [data[key],value]
+                        value = [data[key], value]
             if value:
                 data[key] = value                         
         if not self.mime_type and 'mime_type' in data:
@@ -184,13 +184,13 @@ class Image(Media):
             thumburl = thumbnail[len(settings.MEDIA_ROOT)+1:]
             if not os.path.exists(thumbnail):
                 im = PilImage.open(self.file)
-                im.thumbnail(appsettings.THUMB_SIZE,PilImage.ANTIALIAS)
-                im.save(thumbnail,im.format)
+                im.thumbnail(appsettings.THUMB_SIZE, PilImage.ANTIALIAS)
+                im.save(thumbnail, im.format)
             return '<a href="%s"><img src="%s%s"/></a>'%\
-                        (self.get_absolute_url(),settings.MEDIA_URL,thumburl)
+                        (self.get_absolute_url(), settings.MEDIA_URL, thumburl)
         elif self.external_url:
             return '<a href="%s"><img src="%s"/></a>'%\
-                        (self.get_absolute_url(),self.get_absolute_url())
+                        (self.get_absolute_url(), self.get_absolute_url())
     thumb.allow_tags = True
     thumb.short_description = 'Thumbnail'
     
@@ -220,7 +220,7 @@ class Collection(models.Model):
     title = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(unique=True)
     caption = models.TextField(blank=True)
-    zip_file = models.FileField('Media files in a .zip', upload_to='tmp', blank=True,null=True,
+    zip_file = models.FileField('Media files in a .zip', upload_to='tmp', blank=True, null=True,
                         help_text='Select a .zip file of media to upload into a the Collection.')
     public = models.BooleanField(help_text="this collection is publicly available", default=True)
     sites = models.ManyToManyField(Site)
@@ -248,7 +248,7 @@ class Collection(models.Model):
                 data = zip.read(filename)
                 size = len(data)
                 if size:
-                    title,ext = os.path.splitext(os.path.basename(filename))
+                    title, ext = os.path.splitext(os.path.basename(filename))
                     ext = ext[1:]
                     slug = slugify(title)
                     if ext in appsettings.IMAGE_EXTS:
@@ -275,13 +275,13 @@ class Collection(models.Model):
                         media.file.save(filename, ContentFile(data))                      
                         # XXX: Make site relations possible, send signals
                         media.sites.add(Site.objects.get_current())
-                        CollectionRelation(content_object=media,collection=self).save()
+                        CollectionRelation(content_object=media, collection=self).save()
             zip.close()
             os.remove(self.zip_file.path)
             self.zip_file.delete()
             super(Collection, self).save(*(), **{})
 
-collection_limits = {'model__in':('image','audio','video','flash')}
+collection_limits = {'model__in':('image', 'audio', 'video', 'flash')}
 class CollectionRelation(models.Model):
     collection = models.ForeignKey(Collection)
     content_type = models.ForeignKey(ContentType, limit_choices_to=collection_limits)

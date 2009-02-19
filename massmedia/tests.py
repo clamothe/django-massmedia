@@ -1,8 +1,8 @@
 import unittest
-from massmedia.models import Collection,CollectionRelation
+from massmedia.models import Collection, CollectionRelation
 from django.contrib.sites.models import Site
 from django.conf import settings
-from django.template import Template,Context
+from django.template import Template, Context
 import os
 import shutil
 
@@ -94,13 +94,13 @@ class CollectionTestCase(unittest.TestCase):
             os.path.join(settings.MEDIA_ROOT,'Archive.zip.test'),
             os.path.join(settings.MEDIA_ROOT,'Archive.zip')
         )
-        site = Site.objects.create(domain='example.com',name='Example')
-        self.collection = Collection.objects.create(title='test',slug='test',zip_file='Archive.zip')
+        site = Site.objects.create(domain='example.com', name='Example')
+        self.collection = Collection.objects.create(title='test', slug='test', zip_file='Archive.zip')
         self.collection.sites.add(site)
 
     def testCollection(self):
         relations = CollectionRelation.objects.filter(collection=self.collection)
-        self.assertEqual(len(relations), 8 ,\
+        self.assertEqual(len(relations), 8, \
             'Wrong number of files collected: %s != 8'%len(relations))
     
         self.assertEqual(expected_metadata,
