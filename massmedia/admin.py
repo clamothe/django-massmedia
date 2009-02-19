@@ -56,7 +56,7 @@ class CollectionAdmin(admin.ModelAdmin):
     search_fields = ('caption',)
     inlines = (CollectionInline,)
     class Media:
-        js = ('/media/js/genericcollections.js',)
+        js = ('/site_media/js/genericcollections.js',)
 
 admin.site.register(Collection , CollectionAdmin)
 admin.site.register(Image, ImageAdmin)
