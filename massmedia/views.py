@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.contrib.contenttypes.models import ContentType
 
-def widget(reqeust, id, type):
+def widget(request, id, type):
     if type == 'image':  model = Image
     elif type == 'audio':  model = Audio
     elif type == 'flash':  model = Flash
